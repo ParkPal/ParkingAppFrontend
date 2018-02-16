@@ -1,0 +1,18 @@
+<h1>{{ host.lot_name }}</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+
+
+           <table>
+            <tr>
+		<th> Spot in Use?</th>
+                <th> Last Connect</th>
+             </tr>
+             {% for node in host.choice_set.all %}
+             <tr>
+                <td>node.in_use</td>
+                <td>node.last_connect</td>
+              </tr>
+              {% endfor %}
+               </table>
