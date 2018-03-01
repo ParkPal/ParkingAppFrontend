@@ -1,0 +1,24 @@
+<h1>Welcome username!</h1>
+
+{% if latest_host_list %}
+    <ul>
+	<table boarder = "1">
+          <tr>
+             <th> Lot Name </th>
+             <th> Lot Capacity </th>
+             <th colspan = "20"> Lot Last Connected </th> 
+         </tr>
+         {% for host in latest_host_list %}
+         <tr>
+            <td> <a href="{% url 'polls:lot_dash' host.id %}"> {{host.lot_name }} </a></td>
+            <td> {{host.current_capacity}} </td>
+            <td> {{host.last_connect}} </td>
+	 </tr>
+        <br></br>
+                   
+        </table>
+       {% endfor %}
+    </ul>
+{% else %}
+    <p>No lots are available.</p>
+{% endif %}
