@@ -53,7 +53,7 @@ class DashView(generic.ListView):
 
     def get_queryset(self):
         """Return the last five published questions."""
-        return Host.objects.order_by('last_connect')[:5]
+        return Host.objects.order_by('lastConnect')[:5]
 
 class LotDashView(generic.DetailView):
     model = Host
