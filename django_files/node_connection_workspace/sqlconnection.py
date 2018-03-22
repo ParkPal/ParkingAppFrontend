@@ -7,7 +7,8 @@ Created on Fri Feb  2 13:02:46 2018
 
 from sqlalchemy import *
 from datetime import datetime
-from host_node import PNode, PHost
+from host import Host
+from node import Node
 
 class SQLController:
 
@@ -19,6 +20,7 @@ class SQLController:
 
     node_table = None
     host_table = None
+    user_table = None
 
     # Initial creation of the controller. One for an instance.
     def __init__(self, path):
@@ -58,7 +60,7 @@ class SQLController:
             print("Not a node")
             
     def add_host(self, host):
-        if type(host) is Host:
+        if type(host) is PHost:
             host_name = host.get_name()
             host_owner = 1
             host_lastConn = datetime.now()
@@ -70,25 +72,48 @@ class SQLController:
 
 
     def set_host_status(self, host):
-        if type(host) is PHost:
+        if type(host) is Host:
             host_lastConn = datetime.now()
             host_curCap = self.get_host_cap(host)
-            to_update = update(polls_host).where(polls_host.c.host_name == host.get_name()).values(currentCapacity = host_curCap, lastConnection = host_lastConn)
+            host_spotCount = len(host.get_nodes())
+            host_inUse = self.get_host_in_use(host) 
+            to_update = update(self.host_table).where(self.host_table.c.lotName == host.get_name()).values( currentCapacity = host_curCap, lastConnect = host_lastConn, spotCount = host_spotCount, spotlimit = host_inUse)
             result = self.execute(to_update)
             return result
         else:
             print("Not a host!")
-
+            
+    def get_host_in_use(self, host):
+        x = 0
+        if len(host.get_nodes()) > 0:
+            for node in host.get_nodes():
+                if node.get_inUse() == True:
+                    x += 1
+                    print(host.get_name()+" ")
+                    print(x)
+                    print(node.get_inUse())
+            return x
+        else:
+            print("No nodes!")
+            return 0
+        
     def get_host_cap(self, host):
         x = 0
-        for node in host.get_nodes():
-            if node.node_inUse == True & node.node_disabled == False:
-                x +=1
-        return x/len(host.get_nodes())
+        if len(host.get_nodes()) > 0:
+            for node in host.get_nodes():
+                if node.get_inUse() == False:
+                    x += 1
+                    print(host.get_name()+ " ")
+                    print(x)
+                    print(node.get_inUse())
+            return (x/len(host.get_nodes()))*100.00
+        else:
+            print("Host has no nodes!")
+            return 0
         
             
     def set_node_status(self, node):
-        if type(node) is PNode:
+        if type(node) is Node:
             node_ip = node.get_ip()
             node_lastConn = timedate.now()
             node_inUse = node.get_inUse()
@@ -137,8 +162,10 @@ class SQLController:
             Column('owner', Integer, ForeignKey("auth_user.id")), # Will be a foreign key
             Column('lastConnect', DATETIME),
             Column('spotCount', Integer),
-            Column('spotLimit', Integer),
-            Column('open', Boolean)
+            Column('spotlimit', Integer),
+            Column('open', Boolean),
+            Column('currentCapacity', Numeric(3,2))
+                                
         )
 
 

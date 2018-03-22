@@ -30,9 +30,7 @@ def main():
         if type(obj) is Host:
             sql_controller.set_host_status(obj)
             print("Host recieved")
-            print("Nodes:")
-            for node in obj.get_nodes():
-                  print(node.get_info())
+            print(obj.get_nodes()[0].get_info())
         else:
             print("Recieved garbage from host")
 main()

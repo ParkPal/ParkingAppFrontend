@@ -11,8 +11,8 @@ from node import Node
 def main():
     """ Create an object to represent this parking spot """
     this_host = Host( "Summit Hall Lot")
-    test_node = Node (1, "192.168.1.2")
-    test_node.set_inUse(False)
+    test_node = Node ( 1, "192.168.1.2")
+    test_node.set_inUse(True)
     this_host.add_node(test_node)
     
     """ Create an object to broadcoast updates to host """

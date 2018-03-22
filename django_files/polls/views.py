@@ -48,7 +48,7 @@ class ResultsView(generic.DetailView):
     template_name = 'polls/results.html'
 
 class DashView(generic.ListView):
-    template_name = 'polls/dash.html'
+    template_name = 'polls/new_dash.html'
     context_object_name = 'latest_host_list'
 
     def get_queryset(self):

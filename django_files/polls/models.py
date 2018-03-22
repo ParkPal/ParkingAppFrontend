@@ -26,7 +26,7 @@ class Choice(models.Model):
 
 class Host(models.Model):
 
-    lotName = models.CharField(unique = True, max_length=200)
+    lotName = models.CharField(unique = True, max_length=64)
     owner = models.ForeignKey(User,unique = False, on_delete=models.CASCADE )
     lastConnect = models.DateTimeField(default=timezone.now())
     spotCount = models.IntegerField(default=0)

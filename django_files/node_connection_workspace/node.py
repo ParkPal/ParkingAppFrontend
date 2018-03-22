@@ -8,7 +8,6 @@ from datetime import datetime
 
 class Node:    
     """ Variables """
-    host = None
     node_id = None          # Identification number of the node
     node_ipAddr = None      # IP Address of the node
     node_lastConn = None    # String representing time of last connection
@@ -16,8 +15,7 @@ class Node:
     node_disabled = None
 
     """ Initialization """
-    def __init__(self, id, ipAddr, host):
-        self.host = host
+    def __init__(self, id, ipAddr):
         self.node_id = id
         self.node_ipAddr = ipAddr
         self.node_inUse = False

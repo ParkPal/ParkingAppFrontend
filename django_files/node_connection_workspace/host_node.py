@@ -11,7 +11,7 @@ manages (usually 1).
 
 from datetime import datetime
 
-class PHost:
+class Host:
     """ Variables """
     host_id = None      # This value is provided by the server.
     host_name = None    # This string is given TO the server
@@ -27,7 +27,7 @@ class PHost:
     
     """ Member Functions """
     def add_node(self, node):
-        if type(node) is PNode:
+        if type(node) is Node:
             self.host_nodes.append(node)
         else:
             print("Object not a node...")
@@ -53,7 +53,7 @@ The host node software will maintain a list of these objects to allow it
 to track its child nodes.
 """
 
-class PNode:    
+class Node:    
 
     """ Variables """
     host = None
@@ -64,8 +64,7 @@ class PNode:
     node_disabled = None
 
     """ Initialization """
-    def __init__(self, id, ipAddr, host):
-        self.host = host
+    def __init__(self, id, ipAddr):
         self.node_id = id
         self.node_ipAddr = ipAddr
         self.node_inUse = False

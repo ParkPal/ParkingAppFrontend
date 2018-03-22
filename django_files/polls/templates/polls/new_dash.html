@@ -109,7 +109,9 @@
                 <tr>
                   <th>Lot ID</th>
                   <th>Name</th>
-                  <th>Capacity</th>
+                  <th>% Open</th>
+		  <th>Spot Count</th>
+		  <th>Spots in Use</th>
                 </tr>
               </thead>
               <tbody>
@@ -119,6 +121,8 @@
 		  <td>{{host.id}}</td>
 		  <td>{{host.lotName}}</td>
 		  <td>{{host.currentCapacity}}</td>
+		  <td>{{host.spotCount}}</td>
+		  <td>{{host.spotlimit}}</td>
 		</tr>
 		{% endfor %}
 		{% else  %}

@@ -11,7 +11,8 @@ import socket
 import time
 import pickle
 
-from host_node import *
+from host import Host
+from node import Node
 
 class NetworkConnection:
     """Variables that are used to maintain connection """
@@ -61,9 +62,9 @@ class MeshConnection(NetworkConnection):
 
         obj = self.recieve_object(connection)
 
-        if type(obj) is PHost:
+        if type(obj) is Host:
                 tmp = "Host: " + obj.get_name()
-        elif type(obj) is PNode:
+        elif type(obj) is Node:
                 tmp = "Node: " + obj.get_info()
         else:
                 tmp = "No Data"
