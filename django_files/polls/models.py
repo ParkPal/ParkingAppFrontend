@@ -3,6 +3,7 @@ from django.db import models
 import datetime
 
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -24,28 +25,28 @@ class Choice(models.Model):
         return self.choice_text
 
 class Host(models.Model):
-    lot_name = models.CharField(max_length=200)
-    host_name = models.CharField(default = '',max_length = 60)
-    owner = models.CharField(default= '',max_length = 60)
-    last_connect = models.DateTimeField(default=timezone.now())
-    spot_count = models.IntegerField(default=0)
-    spot_limit = models.IntegerField(default=0)
+
+    lotName = models.CharField(unique = True, max_length=200)
+    owner = models.ForeignKey(User,unique = False, on_delete=models.CASCADE )
+    lastConnect = models.DateTimeField(default=timezone.now())
+    spotCount = models.IntegerField(default=0)
+    spotlimit = models.IntegerField(default=0)
     open = models.BooleanField(default = False)
-    current_capacity = models.DecimalField(default=0, max_digits = 5, decimal_places = 5)
+    currentCapacity = models.DecimalField(default=0, max_digits = 5, decimal_places = 3)
 
     def __str__(self):
-        return self.lot_name
+        return self.lotName
 
 class Node(models.Model):
-    host = models.ForeignKey(Host, on_delete=models.CASCADE)
-    in_use = models.BooleanField(default = False)
+    host = models.ForeignKey(Host, unique = False, on_delete=models.CASCADE)
+    inUse = models.BooleanField(default = False)
     disabled = models.BooleanField(default = False)
-    last_connect = models.DateTimeField(default=timezone.now())
-    ip_addr = models.CharField(default = '', max_length=15)
+    lastConnect = models.DateTimeField(default=timezone.now())
+    ipAddr = models.CharField(default = '', max_length=15)
     def __str__(self):
-        return self.ip_addr
+        return self.ipAddr
     def is_occupied(self):
-        return self.in_use
+        return self.inUse
 
 
 
