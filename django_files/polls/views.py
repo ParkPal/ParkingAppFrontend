@@ -59,4 +59,42 @@ class LotDashView(generic.DetailView):
     model = Host
     template_name = 'polls/lot_dash.html'
 
+def login(request):
+    if request.user.is_authenticated:
+        return index(request)
+    else:
+        if request.method == 'POST':
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(request, username = username, password = password)
+            if user is not None:
+                login(request, user)
+                return render(request, 'new_dash.html')
+            else:
+                failed = "User not found!"
+                content = {'error':failed}
+                return render(request, 'login.html')
 
+        else:
+            return render(request, 'login.html')
+
+def logout(request):
+    logout(request)
+    return render(request, 'login.html')
+
+def signup(request):
+    if request.method == 'POST':
+        if request.POST['pwd_1'] == request.POST['pwd_2']
+            try:
+                user = User.objects.get(username=request.POST['username'])
+                return render(request, 'signup.html', {'error': 'Username already in use!'})
+            except User.DoesNotExist:
+                user = User.objects.create_user(request.POST['username'], password = request.POST[pwd_1])
+                login(request, user)
+                return render(request, 'new_dash.html')
+        else:
+            return render(request, 'signup.html', {'error': 'Passwords didn\'t match!'})
+    else:
+        return render(request, 'signup.html')
+                
+            
