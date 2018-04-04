@@ -1,0 +1,78 @@
+<html>
+<body>
+
+    <div class="center" id="login">
+	
+		<!-- Parking logo -->
+		<div class="wrapper">
+			<img id="logo" src="https://www.balboapark.org/sites/default/files/2017-03/parking.fw__18.png">
+		</div>
+		
+		<!-- login panel -->
+		<div id="loginForm" class="panel panel-primary">
+		
+			<!-- top of login panel -->
+			<div class="panel-heading">
+				<h3 class="wrapper">Parking Pal</h3>
+			</div>
+			
+			<!-- bottom of login panel -->
+			<div class="panel-footer">
+			
+				<!-- login form -->
+				<form action="{% url 'polls:login' %}" method="post">
+					{% csrf_token %}
+					
+					<!--  username input field -->
+					<div class="spacing wrapper">
+						<input id="loginFields" onClick="this.select();" placeholder="Username" name="username" type="text" autofocus>
+					</div>
+					
+					<!-- password input field -->
+					<div class="spacing wrapper">
+						<input id="loginFields" onClick="this.select();" placeholder="Password" name="password" type="password">
+					</div>
+					
+					<!-- error message form -->
+					{% if error %}
+					<span id="errorMsg" onclick='this.remove(this); return false;'>
+						<div class="panel panel-primary wrapper">
+							<p>
+								{{ error }}
+							</p>
+						</div>
+					</span>
+					{% endif %}
+					
+					<!-- success message form -->
+					{% if message %}
+						<span id="goodMsg" onclick='this.remove(this); return false;'>
+							<div class="panel panel-primary wrapper">
+								<p>
+									{{ message }}
+								</p>
+							</div>
+						</span>
+					{% endif %}
+					
+					<!-- login button/input -->
+					<div class="spacing wrapper">
+						<input type="submit" value="Login" id="loginButton"/>
+					</div>
+					
+				</form>
+				
+				<!-- extra buttons -->
+				<div>
+					<a id="signup" class="linkHide themeLight" href="{% url 'polls:signup' %}">Signup</a>
+				</div>	
+				
+			</div>
+			
+		</div>
+		
+	</div>
+	
+</body>
+
+</html>

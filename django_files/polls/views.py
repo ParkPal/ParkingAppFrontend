@@ -4,6 +4,8 @@ from django.shortcuts import get_object_or_404, render
 
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import loader
+from django.contrib.auth.models import User, Group
+from django.contrib.auth import login, authenticate, logout
 from django.http import Http404
 from django.urls import reverse
 from django.views import generic
@@ -29,13 +31,55 @@ def vote(request, question_id):
         # user hits the Back button.
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
 
+
+def login_view(request):
+    if request.user.is_authenticated:
+        return render(request, 'polls/new_dash.html')
+    else:
+        if request.method == 'POST':
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(request, username = username, password = password)
+            if user is not None:
+                login(request, user)
+                return render(request, 'polls/new_dash.html')
+            else:
+                failed = "User not found!"
+                content = {'error':failed}
+                return render(request, 'polls/login.html')
+
+        else:
+            return render(request, 'polls/login.html')
+
+def logout_view(request):
+    logout(request)
+    return index(request)
+def signup_view(request):
+    if request.method == 'POST':
+        if request.POST['pwd_1'] == request.POST['pwd_2']:
+            try:
+                user = User.objects.get(username=request.POST['username'])
+                return render(request, 'polls/signup.html', {'error': 'Username already in use!'})
+            except User.DoesNotExist:
+                user = User.objects.create_user(request.POST['username'], password = request.POST['pwd_1'])
+                login(request, user)
+                return render(request, 'polls/new_dash.html')
+        else:
+            return render(request, 'polls/signup.html', {'error': 'Passwords didn\'t match!'})
+    else:
+        return render(request, 'polls/signup.html')
+
+
+
+
+
 class IndexView(generic.ListView):
-    template_name = 'polls/index.html'
-    context_object_name = 'latest_question_list'
+    template_name = 'polls/new_dash.html'
+    context_object_name = 'latest_host_list'
 
     def get_queryset(self):
         """Return the last five published questions."""
-        return Question.objects.order_by('-pub_date')[:5]
+        return Host.objects.order_by('lastConnect')[:5]
 
 
 class DetailView(generic.DetailView):
@@ -54,47 +98,17 @@ class DashView(generic.ListView):
     def get_queryset(self):
         """Return the last five published questions."""
         return Host.objects.order_by('lastConnect')[:5]
+class OwnerDashView(generic.ListView):
+    template_name = 'polls/owner_dash.html'
+    context_object_name = 'owned_host_list'
 
+    def get_queryset(self):
+        return User.host_set.all()
+    
 class LotDashView(generic.DetailView):
     model = Host
     template_name = 'polls/lot_dash.html'
 
-def login(request):
-    if request.user.is_authenticated:
-        return index(request)
-    else:
-        if request.method == 'POST':
-            username = request.POST['username']
-            password = request.POST['password']
-            user = authenticate(request, username = username, password = password)
-            if user is not None:
-                login(request, user)
-                return render(request, 'new_dash.html')
-            else:
-                failed = "User not found!"
-                content = {'error':failed}
-                return render(request, 'login.html')
 
-        else:
-            return render(request, 'login.html')
-
-def logout(request):
-    logout(request)
-    return render(request, 'login.html')
-
-def signup(request):
-    if request.method == 'POST':
-        if request.POST['pwd_1'] == request.POST['pwd_2']
-            try:
-                user = User.objects.get(username=request.POST['username'])
-                return render(request, 'signup.html', {'error': 'Username already in use!'})
-            except User.DoesNotExist:
-                user = User.objects.create_user(request.POST['username'], password = request.POST[pwd_1])
-                login(request, user)
-                return render(request, 'new_dash.html')
-        else:
-            return render(request, 'signup.html', {'error': 'Passwords didn\'t match!'})
-    else:
-        return render(request, 'signup.html')
                 
             
