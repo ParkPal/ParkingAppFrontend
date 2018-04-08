@@ -31,10 +31,11 @@ def main():
             sql_controller.set_host_status(obj)
             print("Debug Diagnostics: ")
             print("Host Lot Name: " + obj.get_name())
-            print("Host Node Count" + str(len(obj.get_nodes())))
+            print("Host Node Count: " + str(len(obj.get_nodes())))
             print("Host recieved")
-            print("Nodes:")
+            print("Nodes: ")
             for node in obj.get_nodes():
+                i=i+1
                 print("Node number: " + str(i))
                 print(node.get_info())
         else:
