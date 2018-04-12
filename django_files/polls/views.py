@@ -34,7 +34,7 @@ def vote(request, question_id):
 
 def login_view(request):
     if request.user.is_authenticated:
-        return render(request, 'polls/new_dash.html')
+        return render(request, 'polls/owner_dash.html')
     else:
         if request.method == 'POST':
             username = request.POST['username']
@@ -42,7 +42,7 @@ def login_view(request):
             user = authenticate(request, username = username, password = password)
             if user is not None:
                 login(request, user)
-                return render(request, 'polls/new_dash.html')
+                return render(request, 'polls/owner_dash.html')
             else:
                 failed = "User not found!"
                 content = {'error':failed}
@@ -63,7 +63,7 @@ def signup_view(request):
             except User.DoesNotExist:
                 user = User.objects.create_user(request.POST['username'], password = request.POST['pwd_1'])
                 login(request, user)
-                return render(request, 'polls/new_dash.html')
+                return render(request, 'polls/owner_dash.html')
         else:
             return render(request, 'polls/signup.html', {'error': 'Passwords didn\'t match!'})
     else:
@@ -96,18 +96,31 @@ class DashView(generic.ListView):
     context_object_name = 'latest_host_list'
 
     def get_queryset(self):
-        """Return the last five published questions."""
+        """Return the last five connected hosts."""
         return Host.objects.order_by('lastConnect')[:5]
 class OwnerDashView(generic.ListView):
     template_name = 'polls/owner_dash.html'
     context_object_name = 'owned_host_list'
 
     def get_queryset(self):
-        return User.host_set.all()
+        return self.request.user.host_set.all()
     
-class LotDashView(generic.DetailView):
+class LotDashView(generic.ListView):
+ 
     model = Host
     template_name = 'polls/lot_dash.html'
+    context_object_name = 'host_node_list'
+    
+
+    def get_queryset(self):
+        return self.request.user.host_set
+
+def lot_graph_view(request, host_id):
+     host = get_object_or_404(Question, pk=host_id)
+     
+     host_history = host.history_set.all()
+     
+            
 
 
                 
