@@ -49,4 +49,14 @@ class Node(models.Model):
         return self.inUse
 
 
+class History(models.Model):
+    host = models.ForeignKey(Host, unique = False, on_delete=models.CASCADE)
+    lastConnect = models.DateTimeField(default=timezone.now())
+    totalSpots = models.IntegerField(default=0)
+    spotsInUse = models.IntegerField(default=0)
+
+    class Meta:
+        unique_together = (("host", "lastConnect"),)
+
+
 
