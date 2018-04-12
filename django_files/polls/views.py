@@ -98,13 +98,14 @@ class DashView(generic.ListView):
     def get_queryset(self):
         """Return the last five connected hosts."""
         return Host.objects.order_by('lastConnect')[:5]
+#view for owner viewing all their owned lots
 class OwnerDashView(generic.ListView):
     template_name = 'polls/owner_dash.html'
     context_object_name = 'owned_host_list'
 
     def get_queryset(self):
         return self.request.user.host_set.all()
-    
+#
 class LotDashView(generic.ListView):
  
     model = Host
@@ -114,11 +115,13 @@ class LotDashView(generic.ListView):
 
     def get_queryset(self):
         return self.request.user.host_set
-
+#View for a 
 def lot_graph_view(request, host_id):
-     host = get_object_or_404(Question, pk=host_id)
-     
-     host_history = host.history_set.all()
+     host = get_object_or_404(Host, pk=host_id)
+     # this is how we would access host history in the template
+     # host.history_set.all()
+     # Could access nodes beloging to the host in this manner
+     # host.node_set.all()
      
             
 
