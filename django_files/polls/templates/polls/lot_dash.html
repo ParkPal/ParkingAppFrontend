@@ -1,16 +1,18 @@
-<h1>{{ host.lot_name }}</h1>
+<h1>{{ host.lot_name }} Status Page</h1>
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
 
 
            <table>
-            <tr>
+             <tr>
+	        <th> Node IP </th>
 		<th> Spot in Use?</th>
                 <th> Last Connect</th>
              </tr>
-             {% for node in host.choice_set.all %}
-             <tr>
+             {% for node in host.node_set.all %}
+            <tr>
+	        <td>node.ipAddr </td>
                 <td>node.in_use</td>
                 <td>node.last_connect</td>
               </tr>
