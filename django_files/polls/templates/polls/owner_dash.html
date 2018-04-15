@@ -120,7 +120,7 @@
                 <tr>
 		  <td>{{host.id}}</td>
 		  <td><a href= "{% url 'polls:lot_graph_view' host.id %}"> {{host.lotName}}</a></td>
-		  <td>{{host.currentCapacity}}</td>
+		  <td>{{host.inUse}}</td>
 		  <td>{{host.spotCount}}</td>
 		  <td>{{host.spotlimit}}</td>
 		</tr>
