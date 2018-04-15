@@ -119,13 +119,13 @@
 		{% for host in user.host_set.all %}
                 <tr>
 		  <td>{{host.id}}</td>
-		  <td>{{host.lotName}}</td>
+		  <td><a href= "{% url 'polls:lot_graph_view' host.id %}"> {{host.lotName}}</a></td>
 		  <td>{{host.currentCapacity}}</td>
 		  <td>{{host.spotCount}}</td>
 		  <td>{{host.spotlimit}}</td>
 		</tr>
 		{% endfor %}
-		{% else  %}
+		{% else %}
 		<p> No lots are known </p>
 		{% endif %}
               </tbody>
