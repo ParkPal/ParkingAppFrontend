@@ -32,7 +32,7 @@ class Host(models.Model):
     spotCount = models.IntegerField(default=0)
     spotlimit = models.IntegerField(default=0)
     open = models.BooleanField(default = False)
-    currentCapacity = models.DecimalField(default=0, max_digits = 5, decimal_places = 3)
+    inUse = models.FloatField(default=0)
 
     def __str__(self):
         return self.lotName
@@ -54,9 +54,11 @@ class History(models.Model):
     lastConnect = models.DateTimeField(default=timezone.now())
     totalSpots = models.IntegerField(default=0)
     spotsInUse = models.IntegerField(default=0)
+    inUse = models.FloatField(default=0)
 
     class Meta:
         unique_together = (("host", "lastConnect"),)
+
 
 
 

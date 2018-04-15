@@ -127,12 +127,20 @@ class LotDashView(generic.ListView):
     def get_queryset(self):
         return self.request.user.host_set.all()
 #View for a 
-def lot_graph_view(request, host_id):
-     host = get_object_or_404(Host, pk=host_id)
+def lot_graph_view(request,  host_id):
+    if request.user.is_authenticated:
+        host = get_object_or_404(Host, pk=host_id)
+        return render(request, 'polls/lot_dash.html', { 'host':host, })
+    else:
+        return render(request, 'polls/new_dash.html',{
+            'latest_host_list':  Host.objects.order_by('lastConnect'),
+        })
+    
+     
      # this is how we would access host history in the template
      # host.history_set.all()
      # Could access nodes beloging to the host in this manner
-     # host.node_set.all()
+
 def owner_view(request):
     if request.user.is_authenticated:
         return render(request, 'polls/owner_dash.html', {
@@ -140,7 +148,7 @@ def owner_view(request):
         })
     else:
         return render(request, 'polls/new_dash.html',{
-            'latest_host_list':  Host.objects.order_by('lastConnect')[:5]
+            'latest_host_list':  Host.objects.order_by('lastConnect'),
         })
     
             

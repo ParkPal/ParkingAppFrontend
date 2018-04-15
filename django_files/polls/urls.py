@@ -14,6 +14,7 @@ urlpatterns = [
     path('<int:question_id>/vote/', views.vote, name='vote'),
     #path(r'', views.DashView.as_view(), name='dash'),
     #path('<user_username>/dashboard/', views.OwnerDashView.as_view(), name = 'owner_dash'),
-    path('<user_username>/<host_lotName>/lot_report', polls.views.lot_graph_view, name = 'lot_graph_view'),
+    path('<int:host_id>/lot_report', polls.views.lot_graph_view, name = 'lot_graph_view'),
     path('owner_dashboard', polls.views.owner_view, name = 'owner_dash'),
+    
 ]
