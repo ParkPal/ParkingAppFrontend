@@ -87,7 +87,7 @@ class SQLController:
             host_spotCount = len(host.get_nodes())
             host_inUse = self.get_host_in_use(host)
             try:
-                to_update = update(self.host_table).where(self.host_table.c.lotName == host.get_name()).values( currentCapacity = host_curCap, lastConnect = host_lastConn, spotCount = host_spotCount, spotlimit = host_inUse)
+                to_update = update(self.host_table).where(self.host_table.c.lotName == host.get_name()).values( inUse = host_curCap, lastConnect = host_lastConn, spotCount = host_spotCount, spotlimit = host_inUse)
                 result = self.execute(to_update)
                 return result
             except:
@@ -100,7 +100,8 @@ class SQLController:
         history_spotCount = len(host.get_nodes())
         histoy_spotsInUse = self.get_host_in_use(host)
         history_LotID = 1
-        to_insert = self.history_table.insert().values(lastConnect = history_lastConnect, totalSpots = history_spotCount, spotsInUse = histoy_spotsInUse, host_id = history_LotID)
+        history_inUse = self.get_host_cap(host)
+        to_insert = self.history_table.insert().values(lastConnect = history_lastConnect, totalSpots = history_spotCount, spotsInUse = histoy_spotsInUse,inUse = history_inUse , host_id = history_LotID)
         result = self.execute(to_insert)
         return result
             
