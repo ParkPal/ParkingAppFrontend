@@ -21,7 +21,8 @@ class SQLController:
     node_table = None
     host_table = None
     user_table = None
-
+    history_table = None
+    
     # Initial creation of the controller. One for an instance.
     def __init__(self, path):
         self._sql_path = path
@@ -47,25 +48,33 @@ class SQLController:
         result = self._sql_engine.execute(query)
         return result
 
-    def add_node(self, node):
+    def add_node(self, host, node):
         if type(node) is Node:
+            host_query = self.host_table.select().values(lotName = host.get_name())
+            result = self.execute(host_query)
+            
             node_ip = node.get_ip()
             node_lastConn = node.get_last_connection()
             node_inUse = node.get_inUse()
             node_disabled = node.get_disabled()
-            to_insert = self.node_table.insert().values(ipAddr = node_ip, inUse = node_inUse, disabled = node_disabled, lastConnect = node_lastConn)
+            node_fk = 1
+
+            to_insert = self.node_table.insert().values(ipAddr = node_ip, inUse = node_inUse, disabled = node_disabled, lastConnect = node_lastConn, host_id= node_fk)
             result = self.execute(to_insert)
             return result
         else:
             print("Not a node")
             
     def add_host(self, host):
-        if type(host) is PHost:
+        if type(host) is Host:
             host_name = host.get_name()
             host_owner = 1
             host_lastConn = datetime.now()
-            to_insert = self.node_table.insert().values(hostname = host_name, owner = host_owner, lastConnect = host_lastConn)
+
+            to_insert = self.host_table.insert().values(hostname = host_name, owner = host_owner, lastConnect = host_lastConn)
             result = self.execute(to_insert)
+            for node in host.get_nodes():
+                self.add_node(node)
             return result
         else:
             print("Not a host")
@@ -76,12 +85,24 @@ class SQLController:
             host_lastConn = datetime.now()
             host_curCap = self.get_host_cap(host)
             host_spotCount = len(host.get_nodes())
-            host_inUse = self.get_host_in_use(host) 
-            to_update = update(self.host_table).where(self.host_table.c.lotName == host.get_name()).values( currentCapacity = host_curCap, lastConnect = host_lastConn, spotCount = host_spotCount, spotlimit = host_inUse)
-            result = self.execute(to_update)
-            return result
+            host_inUse = self.get_host_in_use(host)
+            try:
+                to_update = update(self.host_table).where(self.host_table.c.lotName == host.get_name()).values( currentCapacity = host_curCap, lastConnect = host_lastConn, spotCount = host_spotCount, spotlimit = host_inUse)
+                result = self.execute(to_update)
+                return result
+            except:
+                self.add_host(host)
+                
         else:
             print("Not a host!")
+    def add_history(self, host):
+        history_lastConnect =  datetime.now()
+        history_spotCount = len(host.get_nodes())
+        histoy_spotsInUse = self.get_host_in_use(host)
+        history_LotID = 1
+        to_insert = self.history_table.insert().values(lastConnect = history_lastConnect, totalSpots = history_spotCount, spotsInUse = histoy_spotsInUse, host_id = history_LotID)
+        result = self.execute(to_insert)
+        return result
             
     def get_host_in_use(self, host):
         x = 0
@@ -183,6 +204,16 @@ class SQLController:
             Column('is_staff', Boolean),
             Column('is_active', Boolean),
             Column('date_joined', DATETIME)
+        )
+
+    def gen_history_table(self):
+        self.history_table = Table('polls_history', self._metadata,
+            Column('id', Integer, primary_key = True, autoincrement=True),
+            Column('lastConnect', DATETIME),
+            Column('totalSpots', Integer),
+            Column('spotsInUse', Integer),
+            Column('host_id', Integer, ForeignKey("polls_host.id"))
+                                   
         )
 """    
     def get_report_table(self, metadata):

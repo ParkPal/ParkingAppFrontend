@@ -27,12 +27,7 @@ class Node:
     def get_info(self):
         return "ID: " + str(self.node_id) + " | IP: " + str(self.node_ipAddr) + " | Status: " + str(self.node_inUse)
 
-    """ Getters and Setters """
-    def get_host(self):
-        return self.host
-    def set_host(self, host):
-        self.host = host
-        
+    """ Getters and Setters """        
     def get_id(self):
         return self.node_id
     def set_id(self, id):
