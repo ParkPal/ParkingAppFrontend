@@ -34,7 +34,10 @@ def vote(request, question_id):
 
 def login_view(request):
     if request.user.is_authenticated:
-        return render(request, 'polls/owner_dash.html')
+        #return HttpResponseRedirect(reverse('polls:owner_dash'))
+        return render(request, 'polls/owner_dash.html', {
+            'user':request.user,
+        })
     else:
         if request.method == 'POST':
             username = request.POST['username']
@@ -42,7 +45,11 @@ def login_view(request):
             user = authenticate(request, username = username, password = password)
             if user is not None:
                 login(request, user)
-                return render(request, 'polls/owner_dash.html')
+                #return HttpResponseRedirect(reverse('polls:owner_dash'))
+                return render(request, 'polls/owner_dash.html', {
+                    'user':request.user,
+                })
+                
             else:
                 failed = "User not found!"
                 content = {'error':failed}
@@ -53,7 +60,9 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return index(request)
+    return render(request, 'polls/new_dash.html',{
+        'latest_host_list': Host.objects.order_by('lastConnect')[:5],
+    })
 def signup_view(request):
     if request.method == 'POST':
         if request.POST['pwd_1'] == request.POST['pwd_2']:
@@ -102,8 +111,10 @@ class DashView(generic.ListView):
 class OwnerDashView(generic.ListView):
     template_name = 'polls/owner_dash.html'
     context_object_name = 'owned_host_list'
+    
 
     def get_queryset(self):
+        #u = get_object_or_404(User, pk = self.request.user.id)
         return self.request.user.host_set.all()
 #
 class LotDashView(generic.ListView):
@@ -114,15 +125,32 @@ class LotDashView(generic.ListView):
     
 
     def get_queryset(self):
-        return self.request.user.host_set
+        return self.request.user.host_set.all()
 #View for a 
-def lot_graph_view(request, host_id):
-     host = get_object_or_404(Host, pk=host_id)
+def lot_graph_view(request,  host_id):
+    if request.user.is_authenticated:
+        host = get_object_or_404(Host, pk=host_id)
+        return render(request, 'polls/lot_dash.html', { 'host':host, })
+    else:
+        return render(request, 'polls/new_dash.html',{
+            'latest_host_list':  Host.objects.order_by('lastConnect'),
+        })
+    
+     
      # this is how we would access host history in the template
      # host.history_set.all()
      # Could access nodes beloging to the host in this manner
-     # host.node_set.all()
-     
+
+def owner_view(request):
+    if request.user.is_authenticated:
+        return render(request, 'polls/owner_dash.html', {
+            'user':request.user,
+        })
+    else:
+        return render(request, 'polls/new_dash.html',{
+            'latest_host_list':  Host.objects.order_by('lastConnect'),
+        })
+    
             
 
 
