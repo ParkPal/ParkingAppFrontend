@@ -139,7 +139,8 @@ class SQLController:
             node_ip = node.get_ip()
             node_lastConn = timedate.now()
             node_inUse = node.get_inUse()
-            to_update = update(node_table).where(node_table.c.ipAddr == node_ip).values(inUse = node_inUse, lastConnect = node_lastConn)
+            node_disabled = node.get_disabled()
+            to_update = update(node_table).where(node_table.c.ipAddr == node_ip).values(inUse = node_inUse, lastConnect = node_lastConn, disabled = node_disabled)
             result = self.execute(to_update)
             return result
         else:
