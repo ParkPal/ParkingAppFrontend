@@ -31,7 +31,8 @@ class SQLController:
         self.gen_node_table()
         self.gen_host_table()
         self.gen_user_table()
-
+        self.gen_history_table()
+        
     # Simple re-creation of engine
     def reset(self):
         self._sql_engine = create_engine(self._sql_path)
@@ -47,6 +48,8 @@ class SQLController:
     def execute(self, query):
         result = self._sql_engine.execute(query)
         return result
+
+    
 
     def add_node(self, host, node):
         if type(node) is Node:
@@ -170,7 +173,7 @@ class SQLController:
          self.node_table = Table('polls_node', self._metadata,
               Column('id', Integer, primary_key=True, autoincrement=True),
               Column('ipAddr', String(15), primary_key=True),
-                                 Column('host_id', Integer, ForeignKey("polls_host.id")),
+              Column('host_id', Integer, ForeignKey("polls_host.id")),
               Column('inUse', Boolean),
               Column('disabled', Boolean),
               Column('lastConnect', DATETIME)
