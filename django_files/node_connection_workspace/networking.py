@@ -76,13 +76,24 @@ class MeshConnection(NetworkConnection):
         connection.close()
         return obj
 
+    def recvall(self, conn):
+        BUFF = 1024
+        data = b''
+        while True:
+             part = conn.recv(BUFF)
+             data += part
+             if len(part) < BUFF:
+                  break
+        return data
+
     def recieve_object(self, conn):
-        final = conn.recv(1024)
+        final = self.recvall(conn)
         try:
             obj = pickle.loads(final)
-            return obj
-        except:
-            print("Error malformed packet")
+        except EOFError:
+            print("Reccived EOF error during unpickling")
+            obj = None
+        return obj
 
     def req_update(self, node):
         # Ask a node for an update
