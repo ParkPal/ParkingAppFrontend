@@ -91,7 +91,8 @@ class MeshConnection(NetworkConnection):
         try:
             obj = pickle.loads(final)
         except EOFError:
-            print("Reccived EOF error during unpickling")
+            print("Reccived EOF error during unpickling, Buffer containts : ")
+            print(str(final))
             obj = None
         return obj
 
