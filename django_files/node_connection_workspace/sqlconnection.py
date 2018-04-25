@@ -6,6 +6,7 @@ Created on Fri Feb  2 13:02:46 2018
 """
 
 from sqlalchemy import *
+from sqlalchemy.dialects.mysql import base as mysql
 from datetime import datetime
 from host import Host
 from node import Node
@@ -74,7 +75,7 @@ class SQLController:
             host_owner = 1
             host_lastConn = datetime.now()
 
-            to_insert = self.host_table.insert().values(hostname = host_name, owner = host_owner, lastConnect = host_lastConn)
+            to_insert = self.host_table.insert().values(lotName = host_name, owner_id = host_owner, lastConnect = host_lastConn)
             result = self.execute(to_insert)
             for node in host.get_nodes():
                 self.add_node(node)
@@ -89,8 +90,9 @@ class SQLController:
             host_curCap = self.get_host_cap(host)
             host_spotCount = len(host.get_nodes())
             host_inUse = self.get_host_in_use(host)
+            
+            to_update = update(self.host_table).where(self.host_table.c.lotName == host.get_name()).values( inUse = host_curCap, lastConnect = host_lastConn, spotCount = host_spotCount, spotlimit = host_inUse)
             try:
-                to_update = update(self.host_table).where(self.host_table.c.lotName == host.get_name()).values( inUse = host_curCap, lastConnect = host_lastConn, spotCount = host_spotCount, spotlimit = host_inUse)
                 result = self.execute(to_update)
                 return result
             except:
@@ -184,13 +186,12 @@ class SQLController:
         self.host_table = Table('polls_host', self._metadata,
             Column('id', Integer, primary_key=True, autoincrement=True),
             Column('lotName', String(200)),
-            Column('hostname', String(60)),
-            Column('owner', Integer, ForeignKey("auth_user.id")), # Will be a foreign key
+            Column('owner_id', Integer, ForeignKey("auth_user.id")), # Will be a foreign key
             Column('lastConnect', DATETIME),
             Column('spotCount', Integer),
             Column('spotlimit', Integer),
             Column('open', Boolean),
-            Column('currentCapacity', Numeric(3,2))
+            Column('inUse', mysql.DOUBLE)
                                 
         )
 
