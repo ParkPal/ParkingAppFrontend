@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
-
+#Example object, shows the basics and some of the advanced features of Django models
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
     pub_date = models.DateTimeField('date published')
@@ -23,7 +23,9 @@ class Choice(models.Model):
     votes = models.IntegerField(default=0)
     def __str__(self):
         return self.choice_text
+# Parking Objects
 
+# Host object stores lot data and overall state
 class Host(models.Model):
 
     lotName = models.CharField(unique = True, max_length=64)
@@ -36,7 +38,7 @@ class Host(models.Model):
 
     def __str__(self):
         return self.lotName
-
+# Node object stores node ip and a fk to its host
 class Node(models.Model):
     host = models.ForeignKey(Host, unique = False, on_delete=models.CASCADE)
     inUse = models.BooleanField(default = False)
@@ -48,7 +50,7 @@ class Node(models.Model):
     def is_occupied(self):
         return self.inUse
 
-
+# History object stores Host state and a timestamp
 class History(models.Model):
     host = models.ForeignKey(Host, unique = False, on_delete=models.CASCADE)
     lastConnect = models.DateTimeField(default=timezone.now())

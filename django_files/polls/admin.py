@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-
+# Will determine what is shown on the admin dashboard
 
 from .models import Host, Node, History
 
